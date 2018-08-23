@@ -52,3 +52,10 @@ svg text {
     user-select: none;
     pointer-events: none;
 }
+
+ScatterPlotMenu{
+    position: absolute;
+    top: 200px;
+    right: 200px;
+    width: 100px;
+}

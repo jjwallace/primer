@@ -111,9 +111,11 @@ class ScatterPlotGraph extends Component {
             .attr("cy", function(d) { return y(d.mortal); })
             .style("fill", function(d) { return color(d.HDI); })
             .attr("stroke", "white")
+            .transition()
+            .duration(function(d,i) { return i * 40 })
             .attr("r", radius)
-            .on("mouseover", handleMouseOver)
-            .on("mouseout", handleMouseOut);
+//            .on("mouseover", handleMouseOver)
+//            .on("mouseout", handleMouseOut);
         
         //LETS HOVER OVER CIRCLES
         function handleMouseOver(d, i) {
@@ -184,7 +186,7 @@ class ScatterPlotGraph extends Component {
         var buttons = svg.selectAll(".buttons")
             .data(buttonsData)
             .enter().append("g")
-            .attr("class", "buttons")
+            .attr("class", function(d, i) {"button" + i + " buttons"})
             .attr("transform", function(d, i) { return "translate(" + (i * buttonSpacing) + ",0)"; });
 
         var rightAlign = width - 320;
@@ -227,7 +229,8 @@ class ScatterPlotGraph extends Component {
     render() {
  
         return (
-            <div className="ScatterPlotGraph">
+            <div className="ScatterPlotMenu">
+                <p>TEST</p>
                 <ScatterPlotMenu data={this.state} />
             </div>
         );
