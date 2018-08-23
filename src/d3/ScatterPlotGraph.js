@@ -117,7 +117,11 @@ class ScatterPlotGraph extends Component {
         svg.selectAll(".dot")
             .data(data)
             .enter().append("circle")
-            .attr("class", "dot")
+            .attr("class", function(d) { 
+                let myClass = d.HDI.toLowerCase();;
+                myClass = myClass.replace(" ", "-");
+                return ('dot dot-' + myClass); }
+            )
             .attr("r", 0)
             .attr("cx", function(d) { return x(d.Incidence); })
             .attr("cy", function(d) { return y(d.mortal); })
@@ -157,11 +161,42 @@ class ScatterPlotGraph extends Component {
             .style("text-anchor", "start")
             .text(function(d) { return d; });
         
-        this.setState({ legend: legend })
+        //LETS MAKE BUTTONS
+        let buttonProps = {width: 32, height: 32, margin: 2 }
         
-        this.setState({ color: color.domain() })
+        let buttonsData = [
+            {label: 1, width: 32},
+            {label: 2, width: 32},
+            {label: 3, width: 32},
+            {label: 4, width: 32},
+            {label: 5, width: 32},
+            {label: 6, width: 32},
+            {label: 'NEXT', width: 64},
+        ]
         
-        console.log(this.state);
+        var buttonSpacing = buttonProps.width + buttonProps.margin;
+            var buttons = svg.selectAll(".buttons")
+            .data(buttonsData)
+            .enter().append("g")
+            .attr("class", "buttons")
+            .attr("transform", function(d, i) { return "translate(" + (i * buttonSpacing) + ",0)"; });
+
+        var rightAlign = width - 320;
+        var bottomAlign = 10;
+
+        buttons.append("rect")
+            .attr("x", rightAlign)
+            .attr("y", bottomAlign)
+            .attr("width", function(d) { return d.width; })
+            .attr("height", buttonProps.height)
+            .style("fill", '#ccc');
+
+        buttons.append("text")
+            .attr("x", function(d) { return rightAlign + d.width / 2; })
+            .attr("y", bottomAlign+buttonProps.height/2)
+            .attr("dy", ".35em")
+            .style("text-anchor", "middle")
+            .text(function(d) { return d.label; });
         
     }
 
