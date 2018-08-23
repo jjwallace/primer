@@ -111,25 +111,26 @@ class ScatterPlotGraph extends Component {
             .attr("cy", function(d) { return y(d.mortal); })
             .style("fill", function(d) { return color(d.HDI); })
             .attr("stroke", "white")
+            .on("mouseover", handleMouseOver)
+            .on("mouseout", handleMouseOut)
             .transition()
             .duration(function(d,i) { return i * 40 })
-            .attr("r", radius)
-//            .on("mouseover", handleMouseOver)
-//            .on("mouseout", handleMouseOut);
+            .attr("r", radius);
+
         
         //LETS HOVER OVER CIRCLES
-        function handleMouseOver(d, i) {
+        function handleMouseOver(d, i, e) {
             var self = d3.select(this)
-            console.log('HOVER ', self);
+            console.log('HOVER ', self, d, e);
 
             // NEEDS AMENDING
-//            svg.append("text")
-//                .attrs({
-//                    id: "t" + d.cx + "-" + d.cy + "-" + i, 
-//                    x: 30,
-//                    y: 15
-//                })
-//                .text(d.Name);
+            svg.append("text")
+                .attrs({
+                    id: "t" + d.cx + "-" + d.cy + "-" + i, 
+                    x: e[i].cx.animVal.value,
+                    y: e[i].cy.animVal.value
+                })
+                .text(d.Name);
         }
 
         function handleMouseOut(d, i) {
