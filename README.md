@@ -3,8 +3,7 @@
 
 Auth: JJWALLACE
 
-Here is a Live Demo [DEMO]
-(https://jjwallace.github.io/primer/build/index.html).
+![alt text](https://raw.githubusercontent.com/jjwallace/primer/master/screenshot.png)
 
 This project was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app).
 
