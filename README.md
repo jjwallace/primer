@@ -3,6 +3,21 @@
 
 Auth: JJWALLACE
 
+## Libraries
+- React
+- Webpack
+- D3 v4
+
+### Features List
+- Scatter Plot Graph (complete)
+- Data Propigation (complete)
+- Legend (complete)
+- Legend Info (to do)
+- Legend Animations and Steps (to do)
+- Text Data Additions (to do)
+- Polish (to do / in process)
+
+
 ![alt text](https://raw.githubusercontent.com/jjwallace/primer/master/screenshot.png)
 
 This project was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app).
