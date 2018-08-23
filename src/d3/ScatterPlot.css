@@ -1,0 +1,23 @@
+.ScatterPlot {
+    text-align: center;
+}
+
+body {
+    font: 10px sans-serif;
+}
+
+.axis path,
+.axis line {
+    fill: none;
+    stroke: #555;
+    shape-rendering: crispEdges;
+}
+
+.dot {
+    stroke: #FFF;
+}
+
+.grid .tick {
+    stroke: lightgrey;
+    opacity: 0.5;
+}
