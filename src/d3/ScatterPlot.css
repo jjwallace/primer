@@ -3,13 +3,27 @@
 }
 
 body {
-    font: 10px sans-serif;
+    font: 12px sans-serif;
+    font-family: "myriad pro";
+    color: #444444;
+}
+
+.label {
+    font: 12px sans-serif;
+    font-family: "myriad pro";
+    color: #999999;
+}
+
+.axis {
+    font: 12px sans-serif;
+    font-family: "myriad pro";
+    color: #999999;
 }
 
 .axis path,
 .axis line {
     fill: none;
-    stroke: #555;
+    stroke: #ccc;
     shape-rendering: crispEdges;
 }
 

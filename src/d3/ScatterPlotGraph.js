@@ -3,34 +3,42 @@ import './ScatterPlot.css';
 
 import * as d3 from "d3";
 
+import ScatterPlotMenu from './ScatterPlotMenu';
+
 class ScatterPlotGraph extends Component {
 
     constructor(props) {
         super(props);
-        console.log("props: " + props)
-        this.state = {  };
+        this.state = this.props.data;
+        console.log(this.state)
     }
 
-    getData() {    
-        let data = window.NYTG.app.data.countries;
-        console.log(data);
-        return data;
-    }
-
+//    componentWillMount() {
+//        var svg = d3.select(".ScatterPlotGraph").append("svg")
+//        
+//        //LETS DRAW OUR DATA ON GRAPH
+//        svg.selectAll(".dot")
+//            .data(this.state.data)
+//            .enter().append("circle")
+//            .attr("class", "dot")
+//            .style("fill", function(d) { return color(d.HDI); })
+//            .attr("stroke", "white")
+//            .transition()
+//            .duration(function(d,i) { return i * 40 })
+//            .attr("r", 5);
+//
+//            this.setState({ color: color.domain() })
+//    }
+    
     componentDidMount() {
         
         console.log('DO WE HAVE OUR PROPS?');
         console.log(this.props)
 
-        let data = this.props.data.data;
-        let width = this.props.data.width;
-        let height = this.props.data.height;
-        let margin = this.props.data.margin;
-
-        let menuBoxW = 380;
-        let menuBoxH = 260;
-
-        let buttonProps = {width: 32, height: 32, margin: 2 }
+        let data = this.state.data;
+        let width = this.state.width;
+        let height = this.state.height;
+        let margin = this.state.margin;
 
         let color = d3.scaleOrdinal(d3.schemeCategory10);
 
@@ -64,25 +72,28 @@ class ScatterPlotGraph extends Component {
         
         //LETS DRAW BOTTOM OF GRAPH
         svg.append("g")
-            .attr("class", "x axis")
+            .attr("class", "axis")
             .style("stroke-dasharray", ("3, 3"))
             .attr("transform", "translate(0," + height + ")")
             .call(d3.axisBottom(x)
-                  .tickSize(-100)
+                  .tickSize(-height)
+                  .ticks(5)
                  )
         
             svg.append("text")
                 .attr("class", "label")
                 .attr("x", width)
-                .attr("y", height - 6)
+                .attr("y", height + 24)
                 .style("text-anchor", "end")
                 .text("Breast Cancer new cases per 100,000 women");
 
         //LETS DRAW SIDE OF GRAPH
         svg.append("g")
-            .attr("class", "y axis")
+            .attr("class", "axis")
             .style("stroke-dasharray", ("3, 3"))
-            .call(d3.axisLeft(y))
+            .call(d3.axisLeft(y)
+                  .tickSize(-width)
+                 )
         
             svg.append("text")
                 .attr("class", "label")
@@ -90,7 +101,17 @@ class ScatterPlotGraph extends Component {
                 .attr("y", 6)
                 .attr("dy", ".71em")
                 .style("text-anchor", "start")
-                .text("Breast Cancer deaths per 100 cases");
+                .style("font-size", "14px")
+                .style("font-weight", "bold")
+                .text("Breast Cancer deaths");
+                
+            svg.append("text")
+                .attr("class", "label")
+                .attr("x", 6)
+                .attr("y", 20)
+                .attr("dy", ".71em")
+                .style("text-anchor", "start")
+                .text("per 100 cases");
         
         //LETS DRAW OUR DATA ON GRAPH
         svg.selectAll(".dot")
@@ -105,21 +126,20 @@ class ScatterPlotGraph extends Component {
             .transition()
             .duration(function(d,i) { return i * 40 })
             .attr("r", 5);
-
+        
+        let menuBoxW = 380;
+        let menuBoxH = 260;
         var menuBoxX = width - menuBoxW;
         var menuBoxY = menuBoxY;
-
-        console.log('TEST4');
-        
         svg.append("rect")
             .attr({ x: menuBoxX, y: menuBoxY, width: menuBoxW, height: menuBoxH, fill: 'white' })
-
+        
         //LEGEND - Break out to new component
         var legend = svg.selectAll(".legend")
-        .data(color.domain())
-        .enter().append("g")
-        .attr("class", "legend")
-        .attr("transform", function(d, i) { return "translate(" + i * -60 + ",0)"; });
+            .data(color.domain())
+            .enter().append("g")
+            .attr("class", "legend")
+            .attr("transform", function(d, i) { return "translate(" + i * -60 + ",0)"; });
 
         var rightAlign = width - 120;
         var bottomAlign = 200;
@@ -136,40 +156,20 @@ class ScatterPlotGraph extends Component {
             .attr("dy", ".35em")
             .style("text-anchor", "start")
             .text(function(d) { return d; });
-
-        var buttonSpacing = buttonProps.width + buttonProps.margin;
-        var buttons = svg.selectAll(".buttons")
-        .data([1,2,3,4,5,6, 'NEXT'])
-        .enter().append("g")
-        .attr("class", "buttons")
-        .attr("transform", function(d, i) { return "translate(" + (i * buttonSpacing) + ",0)"; });
-
-        var rightAlign = width - 320;
-        var bottomAlign = 50;
-
-        buttons.append("rect")
-            .attr("x", rightAlign)
-            .attr("y", bottomAlign)
-            .attr("width", buttonProps.width)
-            .attr("height", buttonProps.height)
-            .style("fill", '#ccc');
-
-        buttons.append("text")
-            .attr("x", rightAlign+buttonProps.width/2)
-            .attr("y", bottomAlign+buttonProps.height/2)
-            .attr("dy", ".35em")
-            .style("text-anchor", "middle")
-            .text(function(d) { return d; });
-
+        
+        this.setState({ legend: legend })
+        
+        this.setState({ color: color.domain() })
+        
+        console.log(this.state);
+        
     }
 
     render() {
  
-        
         return (
             <div className="ScatterPlotGraph">
-
-
+                <ScatterPlotMenu data={this.state} />
             </div>
         );
     }
