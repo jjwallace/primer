@@ -9,18 +9,20 @@ class ScatterPlot extends Component {
     
     constructor(props) {
         super(props);
-        this.state = {};// data: '', margin: '' 
+        this.state = {};
     }
 
     getData() {    
         let data = window.NYTG.app.data.countries;
-        console.log(data);
+        console.log('WE HAVE DATE:',data);
         return data;
     }
     
     componentWillMount() {
         //LETS GET DATA
         let data = this.getData();
+        
+        console.log(data);
 
         //LETS DEFINE OUR SVG SIZE
         let margin = {top: 20, right: 20, bottom: 30, left: 40},

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import './ScatterPlot.css';
 
 import * as d3 from "d3";
+import * as d3SelectionMulti from "d3-selection-multi";
 
 import ScatterPlotMenu from './ScatterPlotMenu';
 
@@ -10,35 +11,17 @@ class ScatterPlotGraph extends Component {
     constructor(props) {
         super(props);
         this.state = this.props.data;
-        console.log(this.state)
     }
-
-//    componentWillMount() {
-//        var svg = d3.select(".ScatterPlotGraph").append("svg")
-//        
-//        //LETS DRAW OUR DATA ON GRAPH
-//        svg.selectAll(".dot")
-//            .data(this.state.data)
-//            .enter().append("circle")
-//            .attr("class", "dot")
-//            .style("fill", function(d) { return color(d.HDI); })
-//            .attr("stroke", "white")
-//            .transition()
-//            .duration(function(d,i) { return i * 40 })
-//            .attr("r", 5);
-//
-//            this.setState({ color: color.domain() })
-//    }
     
     componentDidMount() {
-        
-        console.log('DO WE HAVE OUR PROPS?');
-        console.log(this.props)
+        console.log('DO WE HAVE OUR PROPS?', this.props);
 
         let data = this.state.data;
         let width = this.state.width;
         let height = this.state.height;
         let margin = this.state.margin;
+        
+        let radius = 5; //DOT SIZE
 
         let color = d3.scaleOrdinal(d3.schemeCategory10);
 
@@ -55,8 +38,7 @@ class ScatterPlotGraph extends Component {
         .append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-        console.log('DO WE HAVE OUR DATA?');
-        console.log(data); 
+        console.log('DO WE HAVE OUR DATA?', data);
 
         data.forEach(function(d) {
             d.Incidence = +d.Incidence; //X
@@ -117,20 +99,44 @@ class ScatterPlotGraph extends Component {
         svg.selectAll(".dot")
             .data(data)
             .enter().append("circle")
-            .attr("class", function(d) { 
-                let myClass = d.HDI.toLowerCase();;
-                myClass = myClass.replace(" ", "-");
-                return ('dot dot-' + myClass); }
+            .attr("class", 
+                function(d) { 
+                    let myCSSClass = d.HDI.toLowerCase();
+                    myCSSClass = myCSSClass.replace(" ", "-");
+                    return ('dot dot-' + myCSSClass + 'city'+d.Name); 
+                }
             )
             .attr("r", 0)
             .attr("cx", function(d) { return x(d.Incidence); })
             .attr("cy", function(d) { return y(d.mortal); })
             .style("fill", function(d) { return color(d.HDI); })
             .attr("stroke", "white")
-            .transition()
-            .duration(function(d,i) { return i * 40 })
-            .attr("r", 5);
+            .attr("r", radius)
+            .on("mouseover", handleMouseOver)
+            .on("mouseout", handleMouseOut);
         
+        //LETS HOVER OVER CIRCLES
+        function handleMouseOver(d, i) {
+            var self = d3.select(this)
+            console.log('HOVER ', self);
+
+            // NEEDS AMENDING
+//            svg.append("text")
+//                .attrs({
+//                    id: "t" + d.cx + "-" + d.cy + "-" + i, 
+//                    x: 30,
+//                    y: 15
+//                })
+//                .text(d.Name);
+        }
+
+        function handleMouseOut(d, i) {
+            d3.select(this)
+                .attr({fill: "black",r: radius});
+            d3.select("#t" + d.cx + "-" + d.cy + "-" + i).remove();
+        }
+        
+        //LETS MAKE A MENU
         let menuBoxW = 380;
         let menuBoxH = 260;
         var menuBoxX = width - menuBoxW;
@@ -138,7 +144,7 @@ class ScatterPlotGraph extends Component {
         svg.append("rect")
             .attr({ x: menuBoxX, y: menuBoxY, width: menuBoxW, height: menuBoxH, fill: 'white' })
         
-        //LEGEND - Break out to new component
+        //LEGEND
         var legend = svg.selectAll(".legend")
             .data(color.domain())
             .enter().append("g")
@@ -175,7 +181,7 @@ class ScatterPlotGraph extends Component {
         ]
         
         var buttonSpacing = buttonProps.width + buttonProps.margin;
-            var buttons = svg.selectAll(".buttons")
+        var buttons = svg.selectAll(".buttons")
             .data(buttonsData)
             .enter().append("g")
             .attr("class", "buttons")
@@ -184,12 +190,31 @@ class ScatterPlotGraph extends Component {
         var rightAlign = width - 320;
         var bottomAlign = 10;
 
+        var selection = 0;
+        
         buttons.append("rect")
             .attr("x", rightAlign)
             .attr("y", bottomAlign)
             .attr("width", function(d) { return d.width; })
             .attr("height", buttonProps.height)
-            .style("fill", '#ccc');
+            .style("fill", '#ccc')
+            .style("stroke", (d,i) => i ? selection : 'black')
+            .style("stroke-width:", '5')
+            .on("click", btnClick);
+        
+        //CLICK THE BUTTONS
+        function btnClick(d, i) {
+            var self = d3.select(this);
+            
+            selection = i;
+            
+            console.log(selection);
+            
+            d3.select(this).style("fill", '#8888ff')
+                .transition()
+                .style("fill", '#ccc');
+            
+        }
 
         buttons.append("text")
             .attr("x", function(d) { return rightAlign + d.width / 2; })
@@ -197,7 +222,6 @@ class ScatterPlotGraph extends Component {
             .attr("dy", ".35em")
             .style("text-anchor", "middle")
             .text(function(d) { return d.label; });
-        
     }
 
     render() {
