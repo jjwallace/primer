@@ -33,10 +33,10 @@ class ScatterPlotGraph extends Component {
         
         //LETS DRAW SOME SVGs!
         var svg = d3.select(".ScatterPlotGraph").append("svg")
-        .attr("width", width + margin.left + margin.right)
-        .attr("height", height + margin.top + margin.bottom)
-        .append("g")
-        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+            .attr("width", width + margin.left + margin.right)
+            .attr("height", height + margin.top + margin.bottom)
+            .append("g")
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
         console.log('DO WE HAVE OUR DATA?', data);
 
@@ -103,7 +103,7 @@ class ScatterPlotGraph extends Component {
                 function(d) { 
                     let myCSSClass = d.HDI.toLowerCase();
                     myCSSClass = myCSSClass.replace(" ", "-");
-                    return ('dot dot-' + myCSSClass + 'city'+d.Name); 
+                    return ('circle-' + myCSSClass); 
                 }
             )
             .attr("r", 0)
@@ -114,21 +114,22 @@ class ScatterPlotGraph extends Component {
             .on("mouseover", handleMouseOver)
             .on("mouseout", handleMouseOut)
             .transition()
-            .duration(function(d,i) { return i * 40 })
+            .duration(function(d,i) { return i * 10 })
             .attr("r", radius);
 
         
         //LETS HOVER OVER CIRCLES
         function handleMouseOver(d, i, e) {
             var self = d3.select(this)
-            console.log('HOVER ', self, d, e);
+            console.log('HOVER ', self, d);
 
             // NEEDS AMENDING
             svg.append("text")
                 .attrs({
                     id: "t" + d.cx + "-" + d.cy + "-" + i, 
                     x: e[i].cx.animVal.value,
-                    y: e[i].cy.animVal.value
+                    y: e[i].cy.animVal.value,
+                style: "color:black;stroke:#FFF;stroke-width:0px;text-shadow: 1px 1px #fff;"
                 })
                 .text(d.Name);
         }
@@ -207,7 +208,7 @@ class ScatterPlotGraph extends Component {
         
         //CLICK THE BUTTONS
         function btnClick(d, i) {
-            var self = d3.select(this);
+            let self = d3.select(this);
             
             selection = i;
             
@@ -216,6 +217,35 @@ class ScatterPlotGraph extends Component {
             d3.select(this).style("fill", '#8888ff')
                 .transition()
                 .style("fill", '#ccc');
+            
+            function fadeIn(index){
+                let classSelector = "circle-low";
+                if(index == 0){
+                    d3.selectAll("circle")
+                        .style("opacity", '0.3')
+                        .transition()
+                        .style("opacity", '1')
+                    return null;
+                }
+                if(index == 1){classSelector = "circle-low"}
+                if(index == 2){classSelector = "circle-medium"}
+                if(index == 3){classSelector = "circle-high"}
+                if(index == 4){classSelector = "circle-low"}
+                if(index == 5){classSelector = "circle-very-high"}
+                
+                console.log(classSelector)
+                d3.selectAll('.' + classSelector)
+                    .style("opacity", '0.2')
+                    .transition()
+                    .style("opacity", '1')
+            }
+            
+            function fadeAllOut(){
+                d3.selectAll("circle").style("opacity", '0.2')
+            }
+            
+            fadeAllOut();
+            fadeIn(i);
             
         }
 
